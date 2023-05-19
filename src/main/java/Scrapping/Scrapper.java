@@ -19,92 +19,14 @@ import java.util.ArrayList;
  */
 public class Scrapper {
 
-    public static List<String> scrapeIND(String url, String cssClass) { //IND is Id,Name,Description
+    public static List<String> scrapeData(String url, String cssClass) {
         List<String> dataList = new ArrayList<>();
         try {
-            // Fetch the HTML content from the URL
             Document document = Jsoup.connect(url).get();
-
-            // Find all elements with the specified CSS class
             Elements elements = document.getElementsByClass(cssClass);
-
             if (!elements.isEmpty()) {
-                // Extract the text from each element and add it to the list
                 for (Element element : elements) {
-                    String data = element.text();
-                    dataList.add(data);
-                }
-            } else {
-                System.out.println("No elements with CSS class '" + cssClass + "' found.");
-            }
-        } catch (IOException e) {
-            System.out.println("Failed to fetch data. " + e.getMessage());
-        }
-        return dataList;
-    }
-
-    public static List<String> scrapeBrand(String url, String cssClass) { //IND is Id,Name,Description
-        List<String> dataList = new ArrayList<>();
-        try {
-            // Fetch the HTML content from the URL
-            Document document = Jsoup.connect(url).get();
-
-            // Find all elements with the specified CSS class
-            Elements elements = document.getElementsByClass(cssClass);
-
-            if (!elements.isEmpty()) {
-                // Extract the text from each element and add it to the list
-                for (Element element : elements) {
-                    String data = element.text();
-                    dataList.add(data);
-                }
-            } else {
-                System.out.println("No elements with CSS class '" + cssClass + "' found.");
-            }
-        } catch (IOException e) {
-            System.out.println("Failed to fetch data. " + e.getMessage());
-        }
-        return dataList;
-    }
-
-    public static List<String> scrapePrice(String url, String cssClass) { //IND is Id,Name,Description
-        List<String> dataList = new ArrayList<>();
-        try {
-            // Fetch the HTML content from the URL
-            Document document = Jsoup.connect(url).get();
-
-            // Find all elements with the specified CSS class
-            Elements elements = document.getElementsByClass(cssClass);
-
-            if (!elements.isEmpty()) {
-                // Extract the text from each element and add it to the list
-                for (Element element : elements) {
-                    String data = element.text();
-                    dataList.add(data);
-                }
-            } else {
-                System.out.println("No elements with CSS class '" + cssClass + "' found.");
-            }
-        } catch (IOException e) {
-            System.out.println("Failed to fetch data. " + e.getMessage());
-        }
-        return dataList;
-    }
-    
-        public static List<String> scrapeCategory(String url, String cssClass) { //IND is Id,Name,Description
-        List<String> dataList = new ArrayList<>();
-        try {
-            // Fetch the HTML content from the URL
-            Document document = Jsoup.connect(url).get();
-
-            // Find all elements with the specified CSS class
-            Elements elements = document.getElementsByClass(cssClass);
-
-            if (!elements.isEmpty()) {
-                // Extract the text from each element and add it to the list
-                for (Element element : elements) {
-                    String data = element.text();
-                    dataList.add(data);
+                    dataList.add(element.text());
                 }
             } else {
                 System.out.println("No elements with CSS class '" + cssClass + "' found.");
@@ -116,48 +38,34 @@ public class Scrapper {
     }
 
     public static void main(String[] args) {
-        // Create a new ProductDTO object with all null values
-        ProductDTO product = new ProductDTO(null, null, null, null, null, null, 0.0);
 
-        //url of the product
+        //initialize object
+        ProductDTO product = new ProductDTO(null, null, null, null, null, null, 0.0);
         String url = "https://www.farfetch.com/ie/shopping/men/palm-angels-logo-print-organic-cotton-t-shirt-item-19256863.aspx?q=PMAA066S23JER0021084&ffref=recentSearch;RecentSearch;PMAA066S23JER0021084;1";
 
-        //for IND
+        //class for Id,Name,Description
         String INDClass = "ltr-4y8w0i-Body";
-
-        List<String> resultIND = scrapeIND(url, INDClass); //IND is Id,Name,Description
-
-        //for brand
-        String BrandClass = "ltr-8gbn9h-Heading-HeadingBold";
-
-        List<String> resultBrand = scrapeIND(url, BrandClass);
-
-        //for price
+        List<String> resultIND = scrapeData(url, INDClass);
+        //class for Price
         String PriceClass = "ltr-194u1uv-Heading";
-        List<String> resultPrice = scrapePrice(url, PriceClass);
-        //convert to result to double 
-        String price = resultPrice.get(1); //set to one as FarFetch has a same element with value null with same heading
-        String numbersOnly = price.replaceAll("[^0-9.]", ""); // Remove non-numeric characters except decimal point
+        List<String> resultPrice = scrapeData(url, PriceClass);
+        String price = resultPrice.get(1);
+        //removing euro symbol and converting to double
+        String numbersOnly = price.replaceAll("[^0-9.]", "");
         double convertedPrice = Double.parseDouble(numbersOnly);
-        
-        //for category
-                //for brand
+        //class for categoryandBrand
         String CategoryClass = "ltr-1h8w6zn-Footnote";
-        List<String> CategoryBrand = scrapeCategory(url, CategoryClass);
+        List<String> CategoryBrand = scrapeData(url, CategoryClass);
 
-
-        // Print the retrieved data
-        for (String data : CategoryBrand) {
-            System.out.println(data);
-        }
-        //set the product elements their value
+        //setting the values
         product.setId(resultIND.get(11));
         product.setName(resultIND.get(0));
         product.setDescription(resultIND.get(1));
-        product.setBrand(resultBrand.get(0));
+        product.setBrand(CategoryBrand.get(1));
+        product.setCategory(CategoryBrand.get(3));
         product.setMrp(convertedPrice);
 
-        // Print the retrieved data from the ProductDTO object
+        //printing the values
         System.out.println("-------------------------------------------------------------------------");
         System.out.println("Product ID: " + product.getId());
         System.out.println("Product Name: " + product.getName());
