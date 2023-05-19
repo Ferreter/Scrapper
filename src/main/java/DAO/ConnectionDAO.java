@@ -14,7 +14,7 @@ import java.sql.SQLException;
  */
 public class ConnectionDAO {
     
-    private final String databaseName = "scrapper";
+    private final String databaseName = "scrapper"; //change name of database here 
 
 
 
