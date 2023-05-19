@@ -26,13 +26,15 @@ public class ProductDAO {
         try {
             connection = connectionDAO.getConnection();
 
-            String query = "INSERT INTO products (id, Name, Brand, Tags, Description) VALUES (?, ?, ?, ?, ?)";
+            String query = "INSERT INTO products (id, Name, Brand, Tags, Description, Category, MRP) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, product.getId());
             statement.setString(2, product.getName());
             statement.setString(3, product.getBrand());
             statement.setString(4, product.getTags());
             statement.setString(5, product.getDescription());
+            statement.setString(6, product.getCategory());
+            statement.setDouble(7, product.getMrp());
 
             statement.executeUpdate();
             System.out.println("Product added successfully.");
@@ -42,16 +44,17 @@ public class ProductDAO {
             connectionDAO.freeConnection(connection);
         }
     }
-  
-    // Method to add a random product for testing
+
     public void addRandomProduct() {
         String randomId = UUID.randomUUID().toString();
         String randomName = "Random Product";
         String randomBrand = "Random Brand";
         String randomTags = "Random Tags";
         String randomDescription = "Random Description";
+        String randomCategory = "Random Category";
+        double randomMrp = 9.99;
 
-        ProductDTO randomProduct = new ProductDTO(randomId, randomName, randomBrand, randomTags, randomDescription);
+        ProductDTO randomProduct = new ProductDTO(randomId, randomName, randomBrand, randomTags, randomDescription, randomCategory, randomMrp);
         addProduct(randomProduct);
     }
     

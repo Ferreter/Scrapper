@@ -14,17 +14,20 @@ public class ProductDTO {
     private String brand;
     private String tags;
     private String description;
+    private String category;
+    private double mrp;
 
-    public ProductDTO() {
-    }
-
-    public ProductDTO(String id, String name, String brand, String tags, String description) {
+    public ProductDTO(String id, String name, String brand, String tags, String description, String category, double mrp) {
         this.id = id;
         this.name = name;
         this.brand = brand;
         this.tags = tags;
         this.description = description;
+        this.category = category;
+        this.mrp = mrp;
     }
+
+    // Getters and Setters
 
     public String getId() {
         return id;
@@ -66,10 +69,34 @@ public class ProductDTO {
         this.description = description;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public double getMrp() {
+        return mrp;
+    }
+
+    public void setMrp(double mrp) {
+        this.mrp = mrp;
+    }
+
+    // toString method
+
     @Override
     public String toString() {
-        return "ProductDTO{" + "id=" + id + ", name=" + name + ", brand=" + brand + ", tags=" + tags + ", description=" + description + '}';
+        return "ProductDTO{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", brand='" + brand + '\'' +
+                ", tags='" + tags + '\'' +
+                ", description='" + description + '\'' +
+                ", category='" + category + '\'' +
+                ", mrp=" + mrp +
+                '}';
     }
-    
-    
 }

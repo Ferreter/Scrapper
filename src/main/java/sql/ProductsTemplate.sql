@@ -24,7 +24,9 @@ CREATE TABLE `products` (
   `Name` varchar(250) NOT NULL,
   `Brand` varchar(250) NOT NULL,
   `Tags` varchar(250) DEFAULT NULL,
-  `Description` varchar(250) NOT NULL
+  `Description` varchar(250) NOT NULL,
+  `Category` varchar(255) NOT NULL,
+  `MRP` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
