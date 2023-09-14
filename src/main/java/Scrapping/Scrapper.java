@@ -6,6 +6,8 @@ package Scrapping;
 
 import DAO.ProductDAO;
 import DTO.ProductDTO;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import org.jsoup.nodes.Document;
@@ -37,8 +39,8 @@ public class Scrapper {
         }
         return dataList;
     }
-    
-    public static void addPrint(String url){
+
+    public static void addPrint(String url) {
         ProductDTO product = new ProductDTO(null, null, null, null, null, null, 0.0);
 
         //class for Id,Name,Description
@@ -77,15 +79,37 @@ public class Scrapper {
         System.out.println("Adding to Database");
         ProductDAO productDAO = new ProductDAO();
         productDAO.addProduct(product);
-        
-        
+
+    }
+
+    public static String[] readUrlsFromFile(String fileName) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            String line;
+            StringBuilder urlList = new StringBuilder();
+
+            while ((line = reader.readLine()) != null) {
+                // Append each URL to the StringBuilder with a newline separator
+                urlList.append(line).append("\n");
+            }
+
+            reader.close();
+
+            // Split the concatenated URLs into an array based on newline separator
+            return urlList.toString().split("\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new String[0]; // Return an empty array if there's an error
+        }
     }
 
     public static void main(String[] args) {
 
-        String url = "https://www.farfetch.com/ie/shopping/men/palm-angels-logo-print-organic-cotton-t-shirt-item-19256863.aspx?q=PMAA066S23JER0021084&ffref=recentSearch;RecentSearch;PMAA066S23JER0021084;1";
-        addPrint(url);
-  
-        
+
+        String[] urls = readUrlsFromFile("urls.txt");
+        for (String url : urls) {
+            addPrint(url);
+        }
+
     }
 }
