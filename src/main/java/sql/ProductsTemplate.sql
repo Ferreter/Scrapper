@@ -1,11 +1,4 @@
-/* 
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Other/SQLTemplate.sql to edit this template
- */
-/**
- * Author:  hkhat
- * Created: 19 May, 2023
- */
+
 --
 -- Database: `scrapper`
 --
@@ -38,4 +31,3 @@ CREATE TABLE `products` (
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`);
-COMMIT;

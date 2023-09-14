@@ -4,6 +4,7 @@
  */
 package Scrapping;
 
+import DAO.ProductDAO;
 import DTO.ProductDTO;
 import java.io.IOException;
 import java.util.List;
@@ -36,25 +37,22 @@ public class Scrapper {
         }
         return dataList;
     }
-
-    public static void main(String[] args) {
-
-        //initialize object
+    
+    public static void addPrint(String url){
         ProductDTO product = new ProductDTO(null, null, null, null, null, null, 0.0);
-        String url = "https://www.farfetch.com/ie/shopping/men/palm-angels-logo-print-organic-cotton-t-shirt-item-19256863.aspx?q=PMAA066S23JER0021084&ffref=recentSearch;RecentSearch;PMAA066S23JER0021084;1";
 
         //class for Id,Name,Description
         String INDClass = "ltr-4y8w0i-Body";
-        List<String> resultIND = scrapeData(url, INDClass);
         //class for Price
         String PriceClass = "ltr-194u1uv-Heading";
+        //class for categoryandBrand
+        String CategoryClass = "ltr-1h8w6zn-Footnote";
+        List<String> resultIND = scrapeData(url, INDClass);
         List<String> resultPrice = scrapeData(url, PriceClass);
-        String price = resultPrice.get(1);
+        String price = resultPrice.get(0);
         //removing euro symbol and converting to double
         String numbersOnly = price.replaceAll("[^0-9.]", "");
         double convertedPrice = Double.parseDouble(numbersOnly);
-        //class for categoryandBrand
-        String CategoryClass = "ltr-1h8w6zn-Footnote";
         List<String> CategoryBrand = scrapeData(url, CategoryClass);
 
         //setting the values
@@ -65,6 +63,7 @@ public class Scrapper {
         product.setCategory(CategoryBrand.get(3));
         product.setMrp(convertedPrice);
 
+        System.out.println(product.toString());
         //printing the values
         System.out.println("-------------------------------------------------------------------------");
         System.out.println("Product ID: " + product.getId());
@@ -74,5 +73,19 @@ public class Scrapper {
         System.out.println("Product Description: " + product.getDescription());
         System.out.println("Product Category: " + product.getCategory());
         System.out.println("Product MRP: " + product.getMrp());
+        System.out.println("-------------------------------------------------------------------------");
+        System.out.println("Adding to Database");
+        ProductDAO productDAO = new ProductDAO();
+        productDAO.addProduct(product);
+        
+        
+    }
+
+    public static void main(String[] args) {
+
+        String url = "https://www.farfetch.com/ie/shopping/men/palm-angels-logo-print-organic-cotton-t-shirt-item-19256863.aspx?q=PMAA066S23JER0021084&ffref=recentSearch;RecentSearch;PMAA066S23JER0021084;1";
+        addPrint(url);
+  
+        
     }
 }
