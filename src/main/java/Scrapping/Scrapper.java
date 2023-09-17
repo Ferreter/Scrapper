@@ -15,6 +15,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.jsoup.Jsoup;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -57,8 +58,25 @@ public class Scrapper {
         double convertedPrice = Double.parseDouble(numbersOnly);
         List<String> CategoryBrand = scrapeData(url, CategoryClass);
 
+        //getting & setting id 
+        String productId = null;
+        for (String item : resultIND) {
+            if (item.startsWith("Brand style ID")) {
+                // Assuming the product ID follows the "Brand style ID" in the same format
+                // You may need to adjust the index based on your specific data structure
+                productId = item.substring("Brand style ID".length()).trim();
+                break; // Stop the loop once you find the product ID
+            }
+        }
+
+        if (productId != null) {
+            product.setId(productId);
+        } else {
+            product.setId("Couldnt Retrieve ID");
+        }
+
         //setting the values
-        product.setId(resultIND.get(11));
+   
         product.setName(resultIND.get(0));
         product.setDescription(resultIND.get(1));
         product.setBrand(CategoryBrand.get(1));
@@ -76,9 +94,11 @@ public class Scrapper {
         System.out.println("Product Category: " + product.getCategory());
         System.out.println("Product MRP: " + product.getMrp());
         System.out.println("-------------------------------------------------------------------------");
+        System.out.print(String.join("\n", resultIND));
+
         System.out.println("Adding to Database");
         ProductDAO productDAO = new ProductDAO();
-        productDAO.addProduct(product);
+        //productDAO.addProduct(product);
 
     }
 
@@ -104,7 +124,6 @@ public class Scrapper {
     }
 
     public static void main(String[] args) {
-
 
         String[] urls = readUrlsFromFile("urls.txt");
         for (String url : urls) {
