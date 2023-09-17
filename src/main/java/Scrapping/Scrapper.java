@@ -75,10 +75,35 @@ public class Scrapper {
             product.setId("Couldnt Retrieve ID");
         }
 
+        //getting and setting description 
+        String description = null;
+
+        for (int i = 0; i < resultIND.size(); i++) {
+            String item = resultIND.get(i);
+
+            if (item.startsWith("FARFETCH ID:")) {
+                // Stop the loop once you find the line starting with "FARFETCH ID:"
+                break;
+            } else {
+                // Assuming everything before "FARFETCH ID:" is part of the description
+                if (description == null) {
+                    description = item;
+                } else {
+                    // If there are multiple lines in the description, concatenate them
+                    description += "\n" + item;
+                }
+            }
+        }
+
+        if (description != null) {
+            // You can use or display the extracted description here
+            System.out.println("Description:\n" + description);
+            
+        }
+        product.setDescription(description);
+
         //setting the values
-   
         product.setName(resultIND.get(0));
-        product.setDescription(resultIND.get(1));
         product.setBrand(CategoryBrand.get(1));
         product.setCategory(CategoryBrand.get(3));
         product.setMrp(convertedPrice);
