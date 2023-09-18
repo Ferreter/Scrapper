@@ -1,3 +1,4 @@
+
 # Farfetch Data Scraper
 
 This Java program demonstrates how to scrape product data from the Farfetch website. It retrieves various product details, such as product name, brand, description, category, price, and more, and then adds the scraped data to a database.
@@ -45,6 +46,7 @@ After scraping the data, the program creates a `ProductDTO` object to store the 
 
 The program reads a list of product URLs from a text file named `urls.txt`. Each URL should be on a separate line. It then iterates through the URLs and scrapes data for each product.
 
+
 ## Usage
 
 1. Create a text file named `urls.txt` and add the product URLs you want to scrape, with each URL on a separate line.
@@ -64,3 +66,7 @@ The program reads a list of product URLs from a text file named `urls.txt`. Each
 - You can customize the program to add more product details or database integration as needed.
 
 - Ensure that you have the necessary dependencies and configurations for connecting to the database if you plan to use the database functionality.
+
+- ## Why I Made This App
+
+I created this app with the intention of helping anyone working on their college project or research that requires a sizable dataset. When I was in my final year, I realized the importance of having access to a diverse and extensive dataset for my project. Unfortunately, I faced challenges in obtaining such data. This program is designed to automate the process of data collection from the Farfetch website, making it easier for students and researchers to gather product information for their projects. By providing a tool to collect product data, I hope to make the process more efficient and accessible to others in a similar situation.
