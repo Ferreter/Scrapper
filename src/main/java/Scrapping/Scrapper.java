@@ -9,6 +9,8 @@ import DTO.ProductDTO;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.List;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,6 +19,7 @@ import org.jsoup.Jsoup;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -56,6 +59,21 @@ public class Scrapper {
         return uniqueList;
     }
 
+    public static double convertPriceStringToDouble(String priceString) {
+        try {
+            // Use the French Locale to correctly parse the price with a comma as the decimal separator
+            NumberFormat numberFormat = NumberFormat.getInstance(Locale.FRENCH);
+            Number number = numberFormat.parse(priceString);
+
+            return number.doubleValue();
+        } catch (ParseException e) {
+            // Handle the case where parsing fails (e.g., due to invalid input)
+            // You can log an error message or take appropriate action
+            e.printStackTrace();
+            return 0; // Default value or error indicator
+        }
+    }
+
     public static void addPrint(String url) {
         ProductDTO product = new ProductDTO(null, null, null, null, null, null, 0.0);
 
@@ -68,13 +86,20 @@ public class Scrapper {
         //removing duplicates from resultIND
         List<String> resultINDs = scrapeData(url, INDClass);
         List<String> resultIND = removeDuplicates(resultINDs);
-        
-        
+
+        // Handling price
         List<String> resultPrice = scrapeData(url, PriceClass);
         String price = resultPrice.get(0);
-        //removing euro symbol and converting to double
-        String numbersOnly = price.replaceAll("[^0-9.]", "");
-        double convertedPrice = Double.parseDouble(numbersOnly);
+        System.out.println("Received price: " + price);
+
+    // Remove euro symbol and any leading/trailing whitespace
+        price = price.trim().replaceAll("€", "");
+
+        double convertedPrice = convertPriceStringToDouble(price);
+
+        System.out.println("Converted Price: " + convertedPrice);
+
+        //handling category
         List<String> CategoryBrand = scrapeData(url, CategoryClass);
 
         //getting & setting id 
@@ -88,7 +113,8 @@ public class Scrapper {
             }
         }
 
-        if (productId != null) {
+        if (productId
+                != null) {
             product.setId(productId);
         } else {
             product.setId("Couldnt Retrieve ID");
@@ -97,7 +123,9 @@ public class Scrapper {
         //getting and setting description 
         String description = null;
 
-        for (int i = 0; i < resultIND.size(); i++) {
+        for (int i = 0;
+                i < resultIND.size();
+                i++) {
             String item = resultIND.get(i);
 
             if (item.startsWith("FARFETCH ID:")) {
@@ -114,11 +142,13 @@ public class Scrapper {
             }
         }
 
-        if (description != null) {
+        if (description
+                != null) {
             // You can use or display the extracted description here
             System.out.println("Description:\n" + description);
 
         }
+
         product.setDescription(description);
 
         //setting the values
@@ -129,18 +159,28 @@ public class Scrapper {
 
         System.out.println(product.toString());
         //printing the values
-        System.out.println("-------------------------------------------------------------------------");
-        System.out.println("Product ID: " + product.getId());
-        System.out.println("Product Name: " + product.getName());
-        System.out.println("Product Brand: " + product.getBrand());
-        System.out.println("Product Tags: " + product.getTags());
-        System.out.println("Product Description: " + product.getDescription());
-        System.out.println("Product Category: " + product.getCategory());
-        System.out.println("Product MRP: " + product.getMrp());
-        System.out.println("-------------------------------------------------------------------------");
+        System.out.println(
+                "-------------------------------------------------------------------------");
+        System.out.println(
+                "Product ID: " + product.getId());
+        System.out.println(
+                "Product Name: " + product.getName());
+        System.out.println(
+                "Product Brand: " + product.getBrand());
+        System.out.println(
+                "Product Tags: " + product.getTags());
+        System.out.println(
+                "Product Description: " + product.getDescription());
+        System.out.println(
+                "Product Category: " + product.getCategory());
+        System.out.println(
+                "Product MRP: " + product.getMrp());
+        System.out.println(
+                "-------------------------------------------------------------------------");
         System.out.print(String.join("\n", resultIND));
 
-        System.out.println("Adding to Database");
+        System.out.println(
+                "Adding to Database");
         ProductDAO productDAO = new ProductDAO();
         //productDAO.addProduct(product);
 
