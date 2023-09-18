@@ -59,12 +59,13 @@ public class Scrapper {
         return uniqueList;
     }
 
+    //convert price if it is stored in deciaml as seperator
     public static double convertPriceStringToDouble(String priceString) {
         try {
             // Use the French Locale to correctly parse the price with a comma as the decimal separator
-            NumberFormat numberFormat = NumberFormat.getInstance(Locale.FRENCH);
-            Number number = numberFormat.parse(priceString);
-
+            String priceReplaced = priceString.replace(".", ",");
+            NumberFormat numberFormat = NumberFormat.getInstance(Locale.ENGLISH);
+            Number number = numberFormat.parse(priceReplaced);
             return number.doubleValue();
         } catch (ParseException e) {
             // Handle the case where parsing fails (e.g., due to invalid input)
@@ -90,14 +91,11 @@ public class Scrapper {
         // Handling price
         List<String> resultPrice = scrapeData(url, PriceClass);
         String price = resultPrice.get(0);
-        System.out.println("Received price: " + price);
 
-    // Remove euro symbol and any leading/trailing whitespace
+        // Remove euro symbol and any leading/trailing whitespace
         price = price.trim().replaceAll("€", "");
 
         double convertedPrice = convertPriceStringToDouble(price);
-
-        System.out.println("Converted Price: " + convertedPrice);
 
         //handling category
         List<String> CategoryBrand = scrapeData(url, CategoryClass);
@@ -105,10 +103,10 @@ public class Scrapper {
         //getting & setting id 
         String productId = null;
         for (String item : resultIND) {
-            if (item.startsWith("Brand style ID")) {
+            if (item.startsWith("Brand style ID: ")) {
                 // Assuming the product ID follows the "Brand style ID" in the same format
                 // You may need to adjust the index based on your specific data structure
-                productId = item.substring("Brand style ID".length()).trim();
+                productId = item.substring("Brand style ID: ".length()).trim();
                 break; // Stop the loop once you find the product ID
             }
         }
@@ -144,12 +142,14 @@ public class Scrapper {
 
         if (description
                 != null) {
-            // You can use or display the extracted description here
-            System.out.println("Description:\n" + description);
 
         }
 
         product.setDescription(description);
+        
+        //Setting tags
+        String tag = CategoryBrand.get(1) +","+ CategoryBrand.get(3);
+        product.setTags(tag);
 
         //setting the values
         product.setName(resultIND.get(0));
@@ -157,32 +157,31 @@ public class Scrapper {
         product.setCategory(CategoryBrand.get(3));
         product.setMrp(convertedPrice);
 
-        System.out.println(product.toString());
+        
         //printing the values
         System.out.println(
                 "-------------------------------------------------------------------------");
         System.out.println(
                 "Product ID: " + product.getId());
-        System.out.println(
-                "Product Name: " + product.getName());
-        System.out.println(
-                "Product Brand: " + product.getBrand());
-        System.out.println(
-                "Product Tags: " + product.getTags());
-        System.out.println(
-                "Product Description: " + product.getDescription());
-        System.out.println(
-                "Product Category: " + product.getCategory());
-        System.out.println(
-                "Product MRP: " + product.getMrp());
+//        System.out.println(
+//                "Product Name: " + product.getName());
+//        System.out.println(
+//                "Product Brand: " + product.getBrand());
+//        System.out.println(
+//                "Product Tags: " + product.getTags());
+//        System.out.println(
+//                "Product Description: " + product.getDescription());
+//        System.out.println(
+//                "Product Category: " + product.getCategory());
+//        System.out.println(
+//                "Product MRP: " + product.getMrp());
         System.out.println(
                 "-------------------------------------------------------------------------");
-        System.out.print(String.join("\n", resultIND));
 
         System.out.println(
                 "Adding to Database");
         ProductDAO productDAO = new ProductDAO();
-        //productDAO.addProduct(product);
+        productDAO.addProduct(product);
 
     }
 
