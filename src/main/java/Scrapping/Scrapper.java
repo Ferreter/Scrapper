@@ -16,6 +16,8 @@ import org.jsoup.select.Elements;
 import org.jsoup.Jsoup;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -41,6 +43,19 @@ public class Scrapper {
         return dataList;
     }
 
+    public static List<String> removeDuplicates(List<String> list) {
+        Set<String> uniqueSet = new HashSet<>();
+        List<String> uniqueList = new ArrayList<>();
+
+        for (String element : list) {
+            if (uniqueSet.add(element)) {
+                uniqueList.add(element);
+            }
+        }
+
+        return uniqueList;
+    }
+
     public static void addPrint(String url) {
         ProductDTO product = new ProductDTO(null, null, null, null, null, null, 0.0);
 
@@ -50,7 +65,11 @@ public class Scrapper {
         String PriceClass = "ltr-194u1uv-Heading";
         //class for categoryandBrand
         String CategoryClass = "ltr-1h8w6zn-Footnote";
-        List<String> resultIND = scrapeData(url, INDClass);
+        //removing duplicates from resultIND
+        List<String> resultINDs = scrapeData(url, INDClass);
+        List<String> resultIND = removeDuplicates(resultINDs);
+        
+        
         List<String> resultPrice = scrapeData(url, PriceClass);
         String price = resultPrice.get(0);
         //removing euro symbol and converting to double
@@ -98,7 +117,7 @@ public class Scrapper {
         if (description != null) {
             // You can use or display the extracted description here
             System.out.println("Description:\n" + description);
-            
+
         }
         product.setDescription(description);
 
