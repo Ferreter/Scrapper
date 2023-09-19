@@ -70,3 +70,39 @@ The program reads a list of product URLs from a text file named `urls.txt`. Each
 ## Why I Made This App
 
 I created this app with the intention of helping anyone working on their college project or research that requires a sizable dataset. When I was in my final year, I realized the importance of having access to a diverse and extensive dataset for my project. Unfortunately, I faced challenges in obtaining such data. This program is designed to automate the process of data collection from the Farfetch website, making it easier for students and researchers to gather product information for their projects. By providing a tool to collect product data, I hope to make the process more efficient and accessible to others in a similar situation.
+
+# Farfetch Image Scraper
+
+This Java program is designed to scrape images from Farfetch product pages. Please note that it has been observed that Farfetch may block additional requests beyond the first two URLs. Therefore, it is recommended to use this script for the first two URLs only.
+
+## Prerequisites
+
+Before running the script, make sure you have the following:
+
+- Java Development Kit (JDK) installed on your system.
+- Jsoup library added to your project. You can download it from [Jsoup's official website](https://jsoup.org/download).
+
+## Usage
+
+1. Clone or download this repository to your local machine.
+
+2. Create a text file named `urls.txt` in the same directory as the Java source code (`ImageScraper.java`). Add the URLs of the Farfetch product pages you want to scrape, one URL per line.
+
+3. Compile and run the `ImageScraper.java` file using your Java development environment or command line.
+
+   ```shell
+   javac ImageScraper.java
+   java ImageScraper
+   ```
+The script will connect to each URL, scrape images from the specified class (ltr-1w2up3s), and save them in the /images/ directory with custom image names.
+
+The images will be downloaded and saved in the /images/ directory.
+
+Notes
+- The script may not work for more than two URLs due to potential blocking by Farfetch. Use it with caution and consider scraping only a small number of pages at a time.
+
+- You can customize the image naming logic by modifying the imageName variable in the code.
+
+- Ensure you have proper permissions and rights to scrape content from websites. Respect the website's terms of service and scraping guidelines.
+
+Happy scraping!
