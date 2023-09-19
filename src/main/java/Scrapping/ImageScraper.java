@@ -1,6 +1,9 @@
 package Scrapping;
 
-
+import static Scrapping.Scrapper.addPrint;
+import static Scrapping.Scrapper.readUrlsFromFile;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,32 +16,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+//Image Scrapper works but only works for the 
+//first 2 url as farfetch blocks any other result coming in so it is recommended to remove more than 2 url
+
 public class ImageScraper {
-    public static void main(String[] args) {
-        String url = "https://www.farfetch.com/ie/shopping/men/palm-angels-logo-print-organic-cotton-t-shirt-item-19256863.aspx?q=PMAA066S23JER0021084&ffref=recentSearch;RecentSearch;PMAA066S23JER0021084;1";
-
-        try {
-            Document doc = Jsoup.connect(url).get();
-            Elements imageElements = doc.getElementsByClass("ltr-1w2up3s");
-
-            System.out.println("Number of image elements: " + imageElements.size());
-
-            int imageIndex = 0;
-            for (Element element : imageElements) {
-                if (element.hasAttr("src")) {
-                    String imageUrl = element.attr("src");
-                    System.out.println("Image URL: " + imageUrl);
-                    String imageName = "custom_image_name" + (imageIndex > 0 ? imageIndex : "");  // Provide your custom image name here
-                    downloadImage(imageUrl, imageName);
-                    imageIndex++;
-                }
-            }
-
-            System.out.println("Images downloaded successfully.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private static void downloadImage(String imageUrl, String imageName) {
         try {
@@ -52,4 +33,58 @@ public class ImageScraper {
             e.printStackTrace();
         }
     }
+
+    public static String[] readUrlsFromFile(String fileName) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            String line;
+            StringBuilder urlList = new StringBuilder();
+
+            while ((line = reader.readLine()) != null) {
+                // Append each URL to the StringBuilder with a newline separator
+                urlList.append(line).append("\n");
+            }
+
+            reader.close();
+
+            // Split the concatenated URLs into an array based on newline separator
+            return urlList.toString().split("\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new String[0]; // Return an empty array if there's an error
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+
+        String[] urls = readUrlsFromFile("urls.txt");
+        int index = 0;
+        for (String url : urls) {
+            try {
+                index = index +1;
+                Document doc = Jsoup.connect(url).get();
+                Elements imageElements = doc.getElementsByClass("ltr-1w2up3s");
+                System.out.println("----------------------");
+                System.out.println("Number of image elements: " + imageElements.size());
+                System.out.println("Note the Elements found arent required to have a url so they will not be downloaded ");
+                for (Element element : imageElements) {
+                    if (element.hasAttr("src")) {
+                        Thread.sleep(100);
+                        String imageUrl = element.attr("src");
+                        System.out.println("Image URL: " + imageUrl);
+                        String imageName = "custom_image_name" + index;  // Provide your custom image name here
+                        downloadImage(imageUrl, imageName);
+                        index = index +1;
+                    }
+                }
+
+                System.out.println("Images downloaded successfully.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            
+        }
+
+    }
+
 }
